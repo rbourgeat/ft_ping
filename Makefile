@@ -6,7 +6,7 @@
 #    By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 16:00:27 by rbourgea          #+#    #+#              #
-#    Updated: 2022/06/01 12:25:48 by rbourgea         ###   ########.fr        #
+#    Updated: 2022/06/02 12:31:33 by rbourgea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ INC_NAME	=	ft_ping.h
 SRC_NAME	=	main.c \
 			parsing.c \
 			libft.c \
-			utils.c
+			utils.c \
+			ping.c
 OBJ_NAME	=	$(SRC_NAME:.c=.o)
 
 INC		=	-I inc/

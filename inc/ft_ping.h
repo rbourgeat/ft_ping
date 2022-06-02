@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 14:56:15 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/01 11:57:37 by rbourgea         ###   ########.fr       */
+/*   Updated: 2022/06/02 17:54:30 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,35 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/ip.h>
+#include <netinet/ip_icmp.h>
+
 
 typedef struct s_ping
 {
-	int	h;
-	int	v;
-	char	*dest;
-}		t_ping;
+	int		h;
+	int		v;
+	char		*dest;
+	struct timeval	time;
+	struct addrinfo	*addr;
+	char		*ip;
+	int		databytes;
+}			t_ping;
 
 extern t_ping	g_ping;
 
+// ping.c
+int	exec_ping(t_ping *ping);
 // parsing.c
 int	get_args(t_ping *ping, int argc, char **argv);
 // libft.c
 char	*ft_strdup(const char *s1);
+void	*ft_memset(void *pointer, int value, size_t count);
 // utils.c
 void	print_help(void);
 

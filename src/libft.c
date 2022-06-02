@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 11:36:09 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/01 11:58:25 by rbourgea         ###   ########.fr       */
+/*   Updated: 2022/06/02 12:46:22 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,17 @@ char	*ft_strdup(const char *s1)
 		i++;
 	}
 	return (str);
+}
+
+void	*ft_memset(void *pointer, int value, size_t count)
+{
+	unsigned	int	i;
+	unsigned	char	*c;
+
+	i = 0;
+	c = (unsigned char *)pointer;
+	while (i < count)
+		c[i++] = (unsigned char)value;
+	pointer = (void *)c;
+	return (pointer);
 }

@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 14:56:09 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/01 11:57:05 by rbourgea         ###   ########.fr       */
+/*   Updated: 2022/06/02 12:17:27 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ int	main(int argc, char **argv)
 		print_help();
 		return (-1);
 	}
+	if (g_ping.h)
+		print_help();
+	else
+		return(exec_ping(&g_ping));
 	free_args(&g_ping);
 	return (0);
 }
