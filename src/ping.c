@@ -6,11 +6,26 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 12:16:27 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/02 17:54:32 by rbourgea         ###   ########.fr       */
+/*   Updated: 2022/06/03 15:24:50 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// Sources: http://manpagesfr.free.fr/man/man3/getaddrinfo.3.html
+// https://developpaper.com/the-difference-between-sockaddr-and-sockaddr-in-linux-c/
+// http://manpagesfr.free.fr/man/man3/inet_ntop.3.html
+
 #include "ft_ping.h"
+
+char	*get_ip(struct sockaddr *socket)
+{
+	struct sockaddr_in	*socket_in;
+	char			str[256];
+
+	socket_in = (struct sockaddr_in *)socket;
+	if (!inet_ntop(AF_INET, &socket_in->sin_addr, str, sizeof(str)))
+		return (ft_strdup("???"));
+	return (ft_strdup(str));
+}
 
 struct addrinfo	*rev_dns_info(char *host, char *serv, int family, int socktype)
 {
@@ -36,8 +51,8 @@ static struct addrinfo	*get_addr(t_ping *ping)
 	addr = rev_dns_info(ping->dest, NULL, AF_INET, 0); // AF_INET = IPV4 // AF_INET6 = IPV6
 	if (!addr)
 		return (NULL);
-	ping->ip = set_inetaddr(addr->ai_addr);
-	printf("FT_PING %s (%s) %d(%d) bytes of data\n", addr->ai_canonname ? addr->ai_canonname : ping->dest,
+	ping->ip = get_ip(addr->ai_addr);
+	printf("FT_PING %s (%s) %d(%ld) bytes of data.\n", addr->ai_canonname ? addr->ai_canonname : ping->dest,
 		ping->ip, ping->databytes, ping->databytes + sizeof(struct iphdr) + sizeof(struct icmphdr));
 	if (addr->ai_family != AF_INET)
 		return (NULL);

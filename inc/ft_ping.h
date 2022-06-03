@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 14:56:15 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/02 17:54:30 by rbourgea         ###   ########.fr       */
+/*   Updated: 2022/06/03 15:18:22 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <netdb.h>
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
-
+#include <arpa/inet.h> // inet_ntop
 
 typedef struct s_ping
 {

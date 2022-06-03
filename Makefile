@@ -6,7 +6,7 @@
 #    By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 16:00:27 by rbourgea          #+#    #+#              #
-#    Updated: 2022/06/02 12:31:33 by rbourgea         ###   ########.fr        #
+#    Updated: 2022/06/03 15:09:00 by rbourgea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ RESET   	=	\033[0m
 
 NAME		=	ft_ping
 CC		=	gcc
-FLAGS		=	-Wall -Wextra -Werror -g
+FLAGS		=	-Wall -Wextra -Werror -g -fsanitize=address
 
 INC_PATH	=	inc/
 SRC_PATH	=	src/

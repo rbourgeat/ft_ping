@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 14:56:09 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/02 12:17:27 by rbourgea         ###   ########.fr       */
+/*   Updated: 2022/06/03 15:09:31 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ void	free_args(t_ping *ping)
 int	main(int argc, char **argv)
 {
 	init_ping(&g_ping);
+	if (argc == 1)
+	{
+		printf("ft_ping: usage error: Destination address required\n");
+		return (-1);
+	}
 	if (get_args(&g_ping, argc, argv))
 	{
 		print_help();
