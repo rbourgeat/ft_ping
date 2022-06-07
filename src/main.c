@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/20 14:56:09 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/03 15:09:31 by rbourgea         ###   ########.fr       */
+/*   Created: 2022/06/06 16:24:14 by rbourgea          #+#    #+#             */
+/*   Updated: 2022/06/06 19:41:09 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,41 @@
 
 t_ping	g_ping;
 
-void	init_ping(t_ping *ping)
+int	ret_val(int ret)
 {
-	ping->h = 0;
-	ping->v = 0;
-	ping->dest = NULL;
-}
-
-void	free_args(t_ping *ping)
-{
-	free(ping->dest);
+	if (ret < 0)
+		return (ret);
+	if (g_ping.msg_recv_count)
+		return (0);
+	else if (g_ping.msg_sent)
+		return (2);
+	return (1);
 }
 
 int	main(int argc, char **argv)
 {
-	init_ping(&g_ping);
+	int	ret;
+
 	if (argc == 1)
 	{
-		printf("ft_ping: usage error: Destination address required\n");
+		printf("\033[1m\033[031mft_ping: usage error: Destination address required\n");
 		return (-1);
 	}
+	if (getuid() != 0)
+	{
+		printf("\033[1m\033[031mft_ping: need to use this with sudo\n");
+		return (-1);
+	}
+	init_ping(&g_ping);
 	if (get_args(&g_ping, argc, argv))
 	{
-		print_help();
+		print_usage();
 		return (-1);
 	}
 	if (g_ping.h)
-		print_help();
+		print_usage();
 	else
-		return(exec_ping(&g_ping));
+		ret = ping(&g_ping);
 	free_args(&g_ping);
-	return (0);
+	return (ret_val(ret));
 }

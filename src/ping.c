@@ -5,63 +5,75 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/02 12:16:27 by rbourgea          #+#    #+#             */
-/*   Updated: 2022/06/03 15:29:43 by rbourgea         ###   ########.fr       */
+/*   Created: 2022/06/06 16:24:16 by rbourgea          #+#    #+#             */
+/*   Updated: 2022/06/07 19:44:59 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Sources: http://manpagesfr.free.fr/man/man3/getaddrinfo.3.html
-// https://developpaper.com/the-difference-between-sockaddr-and-sockaddr-in-linux-c/
-// http://manpagesfr.free.fr/man/man3/inet_ntop.3.html
-
 #include "ft_ping.h"
 
-char	*get_ip(struct sockaddr *socket)
+static void	set_packt(t_ping *ping, t_ping_packet *pckt)
 {
-	struct sockaddr_in	*socket_in;
-	char			str[256];
-
-	socket_in = (struct sockaddr_in *)socket;
-	if (!inet_ntop(AF_INET, &socket_in->sin_addr, str, sizeof(str)))
-		return (ft_strdup("???"));
-	return (ft_strdup(str));
+	pckt->mhdr.msg_name = ping->sacrecv;
+	pckt->mhdr.msg_namelen = ping->salen;
+	pckt->mhdr.msg_iov = pckt->iov;
+	pckt->mhdr.msg_iovlen = 1;
+	pckt->mhdr.msg_control = &pckt->ctrl;
+	pckt->mhdr.msg_controllen = sizeof(pckt->ctrl);
+	pckt->iov[0].iov_base = pckt->databuf;
+	pckt->iov[0].iov_len = sizeof(pckt->databuf);
 }
 
-struct addrinfo	*rev_dns_info(char *host, char *serv, int family, int socktype)
+static int	ping_loop(t_ping *ping)
 {
-	struct addrinfo	*res;
-	struct addrinfo	hints;
+	t_ping_packet	pckt;
 
-	ft_memset(&hints, 0, sizeof hints);
-	hints.ai_family = family;
-	hints.ai_socktype = socktype;
-	hints.ai_flags = AI_CANONNAME;
-	if (getaddrinfo(host, serv, &hints, &res) != 0)
+	if (!(ping->sockfd = set_socket(ping)))
+		return (-1);
+	catch_sigalrm(SIGALRM);
+	signal(SIGINT, &catch_sigint);
+	ft_bzero(&pckt, sizeof(pckt));
+	set_packt(ping, &pckt);
+	while (ping->count_max)
 	{
-		printf("ft_ping: %s: Name or service not known\n", host);
-		return (NULL);
+		recv_msg(ping, &pckt);
+		ping->msg_count++;
+		ping->count_max--;
 	}
-	return (res);
-}
-
-static struct addrinfo	*get_addr(t_ping *ping)
-{
-	struct addrinfo	*addr;
-
-	addr = rev_dns_info(ping->dest, NULL, AF_INET, 0); // AF_INET = IPV4 // AF_INET6 = IPV6
-	if (!addr)
-		return (NULL);
-	ping->ip = get_ip(addr->ai_addr);
-	printf("FT_PING %s (%s) %d(%ld) bytes of data.\n", addr->ai_canonname ? addr->ai_canonname : ping->dest,
-		ping->ip, ping->databytes, ping->databytes + sizeof(struct iphdr) + sizeof(struct icmphdr));
-	if (addr->ai_family != AF_INET)
-		return (NULL);
-	return (addr);
-}
-
-int	exec_ping(t_ping *ping)
-{
-	gettimeofday(&ping->time, NULL);
-	ping->addr = get_addr(ping);
+	print_final_stats(ping);
 	return (0);
+}
+
+static struct addrinfo	*get_addr_info(t_ping *ping)
+{
+	struct addrinfo	*info;
+
+	if (!(info = reverse_dns_info(ping->dest, NULL, AF_INET, 0)))
+		return (NULL);
+	ping->dest_ip = set_inetaddr(info->ai_addr);
+	printf("\033[1m\033[034mFT_PING %s (%s) %d(%ld) bytes of data.\n",
+		info->ai_canonname ? info->ai_canonname : ping->dest,
+		ping->dest_ip, ping->datalen,
+		ping->datalen + sizeof(struct iphdr) + sizeof(struct icmphdr));
+	if (info->ai_family != AF_INET)
+		return (NULL);
+	return (info);
+}
+
+int	ping(t_ping *ping)
+{
+	int	ret;
+
+	signal(SIGALRM, &catch_sigalrm);
+	gettimeofday(&ping->launch_time, NULL);
+	ping->before = ping->launch_time;
+	if (!(ping->info = get_addr_info(ping)))
+		return (-1);
+	ping->sasend = ping->info->ai_addr;
+	ping->sacrecv = malloc(ping->info->ai_addrlen);
+	ft_bzero(ping->sacrecv, ping->info->ai_addrlen);
+	ping->salen = ping->info->ai_addrlen;
+	ret = ping_loop(ping);
+	freeaddrinfo(ping->info);
+	return (ret);
 }

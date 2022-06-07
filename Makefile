@@ -6,7 +6,7 @@
 #    By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 16:00:27 by rbourgea          #+#    #+#              #
-#    Updated: 2022/06/03 15:09:00 by rbourgea         ###   ########.fr        #
+#    Updated: 2022/06/07 19:19:24 by rbourgea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ RESET   	=	\033[0m
 # **************************************************************************** #
 
 NAME		=	ft_ping
-CC		=	gcc
+CC			=	gcc
 FLAGS		=	-Wall -Wextra -Werror -g -fsanitize=address
 
 INC_PATH	=	inc/
@@ -37,16 +37,24 @@ SRC_PATH	=	src/
 OBJ_PATH	=	obj/
 
 INC_NAME	=	ft_ping.h
-SRC_NAME	=	main.c \
-			parsing.c \
-			libft.c \
-			utils.c \
-			ping.c
+SRC_NAME	=	args.c \
+				conv_addr.c \
+				libft.c \
+				main.c \
+				ping.c \
+				print.c \
+				recv_msg.c \
+				reverse_dns.c \
+				send_msg.c \
+				signal.c \
+				socket.c \
+				utils.c
+
 OBJ_NAME	=	$(SRC_NAME:.c=.o)
 
-INC		=	-I inc/
-SRC		=	$(addprefix $(SRC_PATH), $(SRC_NAME))
-OBJ		=	$(addprefix $(OBJ_PATH), $(OBJ_NAME))
+INC			=	-I inc/
+SRC			=	$(addprefix $(SRC_PATH), $(SRC_NAME))
+OBJ			=	$(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
 # **************************************************************************** #
 # 📖 RULES
