@@ -29,11 +29,11 @@ int	main(int argc, char **argv)
 {
 	int	ret;
 
-	if (argc == 1)
-	{
-		printf("\033[1m\033[031mft_ping: usage error: Destination address required\n");
-		return (-1);
-	}
+	// if (argc == 1)
+	// {
+	// 	printf("\033[1m\033[031mft_ping: usage error: Destination address required\n");
+	// 	return (-1);
+	// }
 	if (getuid() != 0)
 	{
 		printf("\033[1m\033[031mft_ping: need to use this with sudo\n");

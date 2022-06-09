@@ -50,9 +50,9 @@ void	print_received(t_ping *ping, t_ping_packet *pckt, long recv_bytes, char *re
 		name = ping->fqdn;
 	if (pckt->icmp->icmp_type != ICMP_ECHOREPLY)
 	{
-		printf("\033[1m\033[031mFrom %s (%s): icmp_seq=%d Time exceeded: Hop limit \n",
-			name, recv_ip, ping->msg_count);
-		return ;
+		// printf("\033[1m\033[031mFrom %s (%s): icmp_seq=%d Time exceeded: Hop limit \n",
+		// 	name, recv_ip, ping->msg_count);
+		return;
 	}
 	time = ping->after.tv_sec * 1000.0 + ping->after.tv_usec / 1000.0;
 	time = time - (ping->before.tv_sec * 1000.0 + ping->before.tv_usec / 1000.0);
@@ -88,7 +88,6 @@ void	recv_msg(t_ping *ping, t_ping_packet *pckt)
 	ssize_t	ret;
 	char	*recv_ip;
 	long	recv_bytes;
-
 	ret = recvmsg(ping->sockfd, &pckt->mhdr, 0);
 	pckt->ip = (struct ip *)pckt->databuf;
 	pckt->icmp = (struct icmp *)(pckt->databuf + (pckt->ip->ip_hl << 2));

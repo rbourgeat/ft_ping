@@ -46,7 +46,7 @@ void	init_ping(t_ping *ping)
 	ping->rtt_sum = 0;
 	ping->rtt_sum_sq = 0;
 	ping->msg_sent = 0;
-	ping->msg_count = 0;
+	ping->msg_count = 1;
 	ping->msg_recv_count = 0;
 	ping->fqdn = NULL;
 	ping->dest = NULL;

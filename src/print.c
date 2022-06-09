@@ -72,6 +72,6 @@ void	print_final_stats(t_ping *ping)
 
 void	print_usage(void)
 {
-	// printf("\033[1m\033[035musage: ft_ping [-hvqD] [-c count] [-s packetsize] [-t ttl] [-i interval] host\n");
-	printf("\033[1m\033[035m\nUsage\n  ft_ping [options] <destination>\n\nOptions:\n  <destination>\t\tdns name or ip address\n  -c <count>\t\tstop after <count> replies\n  -D\t\t\tprint timestamps\n  -h\t\t\tprint help and exit\n  -i <interval>\t\tseconds between sending each packet\n  -q\t\t\tquiet output\n  -t <ttl>\t\tdefine time to live\n  -v\t\t\tverbose output\n");
+	printf("\033[1m\033[035mUsage: ft_ping [-Dhqv] [-c count] [-i interval] [-s packetsize] [-t ttl] host\n");
+	// printf("\033[1m\033[035m\nUsage\n  ft_ping [options] <destination>\n\nOptions:\n  <destination>\t\tdns name or ip address\n  -c <count>\t\tstop after <count> replies\n  -D\t\t\tprint timestamps\n  -h\t\t\tprint help and exit\n  -i <interval>\t\tseconds between sending each packet\n  -q\t\t\tquiet output\n  -t <ttl>\t\tdefine time to live\n  -v\t\t\tverbose output\n");
 }

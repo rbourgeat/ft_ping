@@ -17,7 +17,7 @@ int	set_socket(t_ping *ping)
 	int				sock;
 	int				size;
 
-	sock = socket(ping->sasend->sa_family, SOCK_RAW, IPPROTO_ICMP);
+	sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	if (sock < 0)
 	{
 		printf("\033[1m\033[031mft_ping: fail to create socket\n");
@@ -26,5 +26,6 @@ int	set_socket(t_ping *ping)
 	size = 60 * 1024;
 	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, &size, sizeof(size)); // api options
 	setsockopt(sock, IPPROTO_IP, IP_TTL, &ping->ttl, sizeof(ping->ttl));
+	// setsockopt(sock, IPPROTO_IP, IP_HDRINCL, &size, sizeof(size));
 	return (sock);
 }

@@ -12,7 +12,7 @@
 
 #include "ft_ping.h"
 
-static void	set_packt(t_ping *ping, t_ping_packet *pckt)
+static void	init_packet(t_ping *ping, t_ping_packet *pckt)
 {
 	pckt->mhdr.msg_name = ping->sacrecv;
 	pckt->mhdr.msg_namelen = ping->salen;
@@ -33,7 +33,7 @@ static int	ping_loop(t_ping *ping)
 	catch_sigalrm(SIGALRM);
 	signal(SIGINT, &catch_sigint);
 	ft_bzero(&pckt, sizeof(pckt));
-	set_packt(ping, &pckt);
+	init_packet(ping, &pckt);
 	while (ping->count_max)
 	{
 		recv_msg(ping, &pckt);
