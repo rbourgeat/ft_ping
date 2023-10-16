@@ -62,11 +62,13 @@ void ping_loop() {
 			exit(EXIT_FAILURE);
 		}
 
+		g_ping.seq++;
+
 		int nbytes = recvmsg(g_ping.sockfd, &msg, 0);
 
 		if (nbytes < 0) {
 			if (errno == EAGAIN)
-				printf("Request timeout for icmp_seq\n");
+				printf("ft_ping: sendmsg: Network is unreachable\n");
 			else
 				perror("recvfrom");
 			continue;
@@ -78,10 +80,9 @@ void ping_loop() {
 		icmp_rec = (struct icmp *)(buf + (ip->ip_hl << 2));
 		struct timeval *out = (struct timeval *)(icmp_rec->icmp_data);
 
-		double latency = (recv_time.tv_sec - out->tv_sec) * 1000 + (recv_time.tv_usec - out->tv_usec) / 1000;
+		double latency = (double)(recv_time.tv_sec - out->tv_sec) * 1000.0 + (double)(recv_time.tv_usec - out->tv_usec) / 1000.0;
 		printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms\n", nbytes, g_ping.ip, icmp.icmp_seq, ip->ip_ttl, latency);
 
-		g_ping.seq++;
 		g_ping.total_time += latency;
 		if (g_ping.received == 0 || latency < g_ping.min_rtt) {
 			g_ping.min_rtt = latency;
