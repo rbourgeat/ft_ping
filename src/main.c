@@ -17,11 +17,16 @@ void sigint_handler(int signo) {
 }
 
 int main(int ac, char **av) {
+
+	if (getuid() != 0) {
+        printf("You need to run it with sudo.\n");
+		exit(1);
+    }
+
 	parse_arg(ac, av);
 
 	if (signal(SIGINT, sigint_handler) == SIG_ERR) {
 		perror("signal");
-		exit(EXIT_FAILURE);
 	}
 
 	init_socket();

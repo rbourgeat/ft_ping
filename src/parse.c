@@ -61,7 +61,7 @@ void parse_arg(int ac, char **av) {
 			while (arg[j] != '\0') {
 				if (arg[j] == 'h') {
 					print_help();
-					exit(0);
+					exit(2);
 				}
 				else if (arg[j] == 'v')
 					g_ping.is_verbose = 1;

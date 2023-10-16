@@ -109,7 +109,7 @@ void ping_loop() {
 		}
 
 		g_ping.received++;
-		
+
 		usleep(1000000);
 	}
 }
