@@ -11,7 +11,6 @@ void parse_hostname(char *target) {
     struct addrinfo *res;
     int             status;
 
-
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;  // IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM;
@@ -37,7 +36,8 @@ void parse_hostname(char *target) {
         freeaddrinfo(res);
         exit(EXIT_FAILURE);
     }
-    printf("PING %s (%s)\n", target, g_ping.ip);
+
+	printf("PING %s (%s) %d(%ld) bytes of data.\n", target, g_ping.ip, ICMP_DATA_SIZE, ICMP_DATA_SIZE + sizeof(struct icmphdr));
     freeaddrinfo(res);
 }
 
@@ -73,8 +73,10 @@ void parse_arg(int ac, char **av) {
 				j++;
 			}
 		}
-		else
+		else {
 			parse_hostname(arg);
+			snprintf(g_ping.target, sizeof(g_ping.target), "%s", arg);
+		}
 		i++;
 	}
 }
