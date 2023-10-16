@@ -29,7 +29,7 @@ typedef struct s_ping {
 	double	sum;
 }			t_ping;
 
-void	pars_arg(int ac, char **av);
-// int	set_sock(void);
+void	parse_arg(int ac, char **av);
+void	init_socket(void);
 
 #endif

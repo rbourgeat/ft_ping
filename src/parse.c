@@ -37,11 +37,11 @@ void parse_hostname(char *target) {
         freeaddrinfo(res);
         exit(EXIT_FAILURE);
     }
-    printf("PING %s (%s)", target, g_ping.ip);
+    printf("PING %s (%s)\n", target, g_ping.ip);
     freeaddrinfo(res);
 }
 
-void pars_arg(int ac, char **av) {
+void parse_arg(int ac, char **av) {
 	char *arg;
 	int i = 1;
 	int j = 1;

@@ -6,7 +6,7 @@
 #    By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 16:00:27 by rbourgea          #+#    #+#              #
-#    Updated: 2023/10/16 17:34:44 by rbourgea         ###   ########.fr        #
+#    Updated: 2023/10/16 18:19:30 by rbourgea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,8 @@ CC		=	gcc
 INC_FILES	=	ft_ping.h
 
 SRC_FILES	=	main.c \
-			parse.c
+			parse.c \
+			socket.c
 
 INC_DIR		=	inc
 SRC_DIR		=	src
