@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/17 07:10:56 by rbourgea          #+#    #+#             */
+/*   Updated: 2023/10/17 07:39:03 by rbourgea         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "../inc/ft_ping.h"
 
 extern t_ping g_ping;
@@ -11,13 +23,13 @@ void parse_hostname(char *target) {
     struct addrinfo *res;
     int             status;
 
-    memset(&hints, 0, sizeof hints);
+    ft_memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;  // IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM;
 
     if ((status = getaddrinfo(target, NULL, &hints, &res)) != 0) {
-        fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(status));
-        exit(EXIT_FAILURE);
+        fprintf(stderr,"ft_ping: %s: %s\n", g_ping.target, gai_strerror(status));
+        exit(1);
     }
 
     void *addr;
@@ -28,13 +40,13 @@ void parse_hostname(char *target) {
     } else { // IPv6
         fprintf(stderr, "Error IPv6 not supported\n");
         freeaddrinfo(res);
-        exit(EXIT_FAILURE);
+        exit(1);
    }
 
     if (inet_ntop(res->ai_family, addr, g_ping.ip, sizeof g_ping.ip) == NULL) {
         perror("inet_ntop");
         freeaddrinfo(res);
-        exit(EXIT_FAILURE);
+        exit(1);
     }
 
     freeaddrinfo(res);
@@ -46,7 +58,7 @@ void parse_arg(int ac, char **av) {
 	int j = 1;
 
 	if (ac < 2) {
-		printf("ft_ping: usage error: Destination address required\n");
+		print_help();
 		exit(1);
 	}
 
@@ -54,8 +66,8 @@ void parse_arg(int ac, char **av) {
 		arg = av[i];
 		if (arg[0] == '-') {
 			if (strlen(arg) < 2) {
-				printf("Error option not found\n./ft_ping [-v] [-h] target\n");
-				exit(1);
+				printf("ft_ping: -: Name or service not known\n");
+				exit(2);
 			}
 			while (arg[j] != '\0') {
 				if (arg[j] == 'h') {
@@ -67,14 +79,14 @@ void parse_arg(int ac, char **av) {
 				else {
 					printf("ft_ping: option requires an argument -- '%c'\n", arg[j]);
 					print_help();
-					exit(EXIT_FAILURE);
+					exit(2);
 				}
 				j++;
 			}
 		}
 		else {
-			parse_hostname(arg);
 			snprintf(g_ping.target, sizeof(g_ping.target), "%s", arg);
+			parse_hostname(arg);
 		}
 		i++;
 	}

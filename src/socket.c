@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   socket.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/17 07:10:58 by rbourgea          #+#    #+#             */
+/*   Updated: 2023/10/17 07:16:26 by rbourgea         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "../inc/ft_ping.h"
 
 extern t_ping g_ping;
@@ -35,16 +47,16 @@ void ping_loop() {
 	char packet[ip_header_size + icmp_packet_size];
 
 	while (1) {
-		memset(&iov, 0, sizeof(iov));
-		memset(&msg, 0, sizeof(msg));
-		memset(&icmp, 0, sizeof(icmp));
+		ft_memset(&iov, 0, sizeof(iov));
+		ft_memset(&msg, 0, sizeof(msg));
+		ft_memset(&icmp, 0, sizeof(icmp));
 
 		icmp.icmp_type = ICMP_ECHO;
 		icmp.icmp_code = 0;
 		icmp.icmp_id = getpid();
 		icmp.icmp_seq = seq_sum++;
 		gettimeofday(&send_time, NULL);
-		memcpy(icmp.icmp_data, &send_time, sizeof(struct timeval));
+		ft_memcpy(icmp.icmp_data, &send_time, sizeof(struct timeval));
 
 		if (seq_sum == 2)
 			printf("PING %s (%s) %d(%d) bytes of data.\n", g_ping.target, g_ping.ip, PAYLOAD_SIZE, total_packet_size);
@@ -66,7 +78,7 @@ void ping_loop() {
 		if (sendto(g_ping.sockfd, &icmp, sizeof(icmp), 0, (struct sockaddr *)g_ping.res, sizeof(struct sockaddr)) < 0) {
 			perror("sendto");
 			close(g_ping.sockfd);
-			exit(EXIT_FAILURE);
+			exit(1);
 		}
 
 		g_ping.seq++;
@@ -126,7 +138,7 @@ void init_socket() {
 	g_ping.sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	if (g_ping.sockfd < 0) {
 		perror("socket");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	g_ping.timeout = 1;
 	struct timeval tv;
@@ -134,7 +146,7 @@ void init_socket() {
 	tv.tv_usec = 0;
 	if (setsockopt(g_ping.sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv)) < 0) {
 		perror("setsockopt");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 
 	ping_loop();

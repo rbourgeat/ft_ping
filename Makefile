@@ -35,7 +35,8 @@ INC_FILES	=	ft_ping.h
 
 SRC_FILES	=	main.c \
 			parse.c \
-			socket.c
+			socket.c \
+			libft.c
 
 INC_DIR		=	inc
 SRC_DIR		=	src
