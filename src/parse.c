@@ -3,7 +3,7 @@
 extern t_ping g_ping;
 
 void print_help() {
-	printf("\nUsage\n  ping [options] <destination>\n\nOptions:\n  <destination>      dns name or ip address\n  -h                 print help and exit\n  -v                 verbose output\n\nFor more details see https://github.com/rbourgeat/ft_ping.\n");
+	printf("Usage: ping [-hv] destination\n");
 }
 
 void parse_hostname(char *target) {
@@ -37,7 +37,6 @@ void parse_hostname(char *target) {
         exit(EXIT_FAILURE);
     }
 
-	printf("PING %s (%s) %d(%ld) bytes of data.\n", target, g_ping.ip, ICMP_DATA_SIZE, ICMP_DATA_SIZE + sizeof(struct icmphdr));
     freeaddrinfo(res);
 }
 
@@ -66,7 +65,7 @@ void parse_arg(int ac, char **av) {
 				else if (arg[j] == 'v')
 					g_ping.is_verbose = 1;
 				else {
-					printf("ping: option requires an argument -- '%c'\n", arg[j]);
+					printf("ft_ping: option requires an argument -- '%c'\n", arg[j]);
 					print_help();
 					exit(EXIT_FAILURE);
 				}

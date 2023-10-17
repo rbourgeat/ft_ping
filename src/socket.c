@@ -2,17 +2,17 @@
 
 extern t_ping g_ping;
 
-unsigned short checksum(unsigned short *buf, int bufsz) {
+unsigned short checksum(unsigned short *packet, int bufsz) {
 	unsigned long sum = 0;
 	unsigned short result;
 
 	while (bufsz > 1) {
-		sum += *buf++;
+		sum += *packet++;
 		bufsz -= 2;
 	}
 
 	if (bufsz == 1)
-		sum += *(unsigned char *)buf;
+		sum += *(unsigned char *)packet;
 
 	sum = (sum >> 16) + (sum & 0xffff);
 	sum += (sum >> 16);
@@ -25,10 +25,14 @@ void ping_loop() {
 	struct iovec iov;
 	struct icmp icmp;
 	struct icmp *icmp_rec;
-	char buf[64];
-	struct timeval send_time, recv_time;
+	struct timeval send_time;
+	struct timeval recv_time;
 	struct ip *ip;
 	int seq_sum = 1;
+	int icmp_packet_size = PAYLOAD_SIZE + sizeof(struct icmphdr);
+	int ip_header_size = sizeof(struct ip);
+	int total_packet_size = ip_header_size + icmp_packet_size;
+	char packet[ip_header_size + icmp_packet_size];
 
 	while (1) {
 		memset(&iov, 0, sizeof(iov));
@@ -42,11 +46,14 @@ void ping_loop() {
 		gettimeofday(&send_time, NULL);
 		memcpy(icmp.icmp_data, &send_time, sizeof(struct timeval));
 
+		if (seq_sum == 2)
+			printf("PING %s (%s) %d(%d) bytes of data.\n", g_ping.target, g_ping.ip, PAYLOAD_SIZE, total_packet_size);
+
 		icmp.icmp_cksum = 0;
 		icmp.icmp_cksum = checksum((unsigned short *)&icmp, sizeof(icmp));
 
-		iov.iov_base = buf;
-		iov.iov_len = sizeof(buf);
+		iov.iov_base = packet;
+		iov.iov_len = total_packet_size;
 
 		msg.msg_name = NULL;
 		msg.msg_namelen = 0;
@@ -76,12 +83,12 @@ void ping_loop() {
 
 		gettimeofday(&recv_time, NULL);
 
-		ip = (struct ip *)buf;
-		icmp_rec = (struct icmp *)(buf + (ip->ip_hl << 2));
+		ip = (struct ip *)packet;
+		icmp_rec = (struct icmp *)(packet + (ip->ip_hl << 2));
 		struct timeval *out = (struct timeval *)(icmp_rec->icmp_data);
 
 		double latency = (double)(recv_time.tv_sec - out->tv_sec) * 1000.0 + (double)(recv_time.tv_usec - out->tv_usec) / 1000.0;
-		printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms\n", nbytes, g_ping.ip, icmp.icmp_seq, ip->ip_ttl, latency);
+		printf("%ld bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms\n", PAYLOAD_SIZE + sizeof(struct icmphdr), g_ping.ip, icmp.icmp_seq, ip->ip_ttl, latency);
 
 		g_ping.total_time += latency;
 		if (g_ping.received == 0 || latency < g_ping.min_rtt) {

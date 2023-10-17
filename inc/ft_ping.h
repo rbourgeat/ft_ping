@@ -15,7 +15,7 @@
 # include <errno.h>
 # include <signal.h>
 
-# define ICMP_DATA_SIZE 56
+# define PAYLOAD_SIZE 56
 # define MAX_LATENCIES 10
 
 
@@ -44,6 +44,6 @@ typedef struct s_ping {
 }			t_ping;
 
 void	parse_arg(int ac, char **av);
-void	init_socket(void);
+void	init_socket();
 
 #endif
