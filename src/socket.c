@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 07:10:58 by rbourgea          #+#    #+#             */
-/*   Updated: 2023/10/17 07:16:26 by rbourgea         ###   ########.fr       */
+/*   Updated: 2023/10/17 09:10:20 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,10 @@ void ping_loop() {
 
 		if (sendto(g_ping.sockfd, &icmp, sizeof(icmp), 0, (struct sockaddr *)g_ping.res, sizeof(struct sockaddr)) < 0) {
 			perror("sendto");
-			close(g_ping.sockfd);
-			exit(1);
+			if (g_ping.is_verbose == 0) {
+				close(g_ping.sockfd);
+				exit(1);
+			}
 		}
 
 		g_ping.seq++;
